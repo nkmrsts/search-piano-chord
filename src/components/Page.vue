@@ -115,9 +115,11 @@ export default {
   height: 100vh;
 }
 .keyboard {
-  height: 60%;
+  height: 50%;
+  max-width: 1080px;
+  margin: 0 auto;
+  background: #e3e3de;
   &_panel {
-    background: #e3e3de;
     height: 30%;
     display: flex;
     align-items: center;
@@ -140,7 +142,7 @@ export default {
   }
 }
 .foundChord {
-  height: 40%;
+  height: 50%;
   margin: 0;
   list-style: none;
   overflow: scroll;
