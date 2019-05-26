@@ -15,6 +15,7 @@ export default {
 html {
   margin: 0;
   font-size: 75%;
+  box-sizing: border-box;
 
   @media screen and (min-height: 480px) {
     font-size: 100%;

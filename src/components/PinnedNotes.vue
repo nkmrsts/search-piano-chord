@@ -1,18 +1,17 @@
 <template>
   <div class="keyboardNotes">
     <template v-for="index in octave">
-      <button
+      <p
         type="button"
         class="keyboardNotes_note"
-        v-for="(note, notesIndex) in notes"
+        v-for="(note) in notes"
+        :class="{ included: isIncluded(note + (index + 1)) }"
         :key="note + (index + 1)"
-        :data-note="note + (index + 1)"
         :value="note"
-        aria-pressed="false"
-        @click="clickKey($event, notesIndex)"
+        :data-note="note + (index + 1)"
       >
         <span>{{ note }}</span>
-      </button>
+      </p>
     </template>
   </div>
 </template>
@@ -20,28 +19,48 @@
 <script>
 import { NOTES } from '../const/index.js'
 export default {
-  name: 'KeyboardNotes',
-  props: {
-    octave: {
-      type: Number,
-      default: 2
-    }
-  },
+  name: 'PinnedNotes',
   data() {
     return {
       notes: NOTES
     }
   },
+  props: {
+    octave: {
+      type: Number,
+      default: 2
+    },
+    cons: {
+      type: Array,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
+    }
+  },
+  computed: {
+    consOctave() {
+      let octave = 2
+      let prevNoteIndex = 0
+      return this.cons.map(v => {
+        const noteIndex = this.notes.findIndex(noteValue => {
+          return v === noteValue
+        })
+        if (noteIndex < prevNoteIndex) {
+          octave += 1
+        }
+        prevNoteIndex = noteIndex
+        return v + octave
+      })
+    }
+  },
   methods: {
-    clickKey(event, noteNumber) {
-      event.currentTarget.getAttribute('aria-pressed') === 'false'
-        ? event.currentTarget.setAttribute('aria-pressed', true)
-        : event.currentTarget.setAttribute('aria-pressed', false)
-      this.$emit(
-        'onClick',
-        event.currentTarget.dataset.note,
-        noteNumber
-      )
+    isIncluded(note) {
+      const index = this.consOctave.findIndex(element => {
+        return element === note
+      })
+      return index > -1
     }
   }
 }
@@ -54,6 +73,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   background: #222;
+  height: 150px;
   &_note {
     background-color: white;
     width: calc(100% / 14); //白鍵の数 14
@@ -63,20 +83,11 @@ export default {
     border-bottom: none;
     box-shadow: #575757 0 3px 3px -1px;
     position: relative;
-    transition-property: background-color, box-shadow;
-    transition-duration: 0.2s;
-    font-size: 22px;
+    font-size: 12px;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    padding-bottom: 1rem;
-    &:focus {
-      outline: none;
-    }
-    &:active {
-      background-color: #fafafa;
-      box-shadow: grey 0 1px 3px -1px;
-    }
+    margin: 5px 0;
     & > span {
       width: 2rem;
       height: 2rem;
@@ -85,7 +96,7 @@ export default {
       justify-content: center;
       box-sizing: border-box;
     }
-    &[aria-pressed='true'] > span {
+    &.included > span {
       border: 2px solid red;
       border-radius: 2rem;
     }
@@ -98,12 +109,8 @@ export default {
       height: 65%;
       left: calc(30% / 14);
       margin-top: -5px;
-      font-size: 16px;
+      font-size: 12px;
       color: #fff;
-      &:active {
-        background-color: #292929;
-        box-shadow: grey 0 3px 3px -1px, #fafafa 0 0 3px 0 inset;
-      }
     }
   }
 }
