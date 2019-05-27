@@ -1,8 +1,9 @@
 <template>
   <li class="reaults__item">
     <span class="chord-name">{{ chordName }}</span
-    >:<span class="chord-cons">{{ joinChordCons }}</span>
+    ><span class="chord-cons">{{ joinChordCons }}</span>
     <span @click="clickPin" class="pinned">pinned</span>
+    <span @click="clickPlay" class="pinned">play</span>
   </li>
 </template>
 
@@ -21,6 +22,9 @@ export default {
   methods: {
     clickPin() {
       this.$emit('addPin', this.chordName, this.chordCons)
+    },
+    clickPlay(){
+      this.$emit('playChord')
     }
   }
 }

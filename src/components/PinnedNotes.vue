@@ -1,14 +1,15 @@
 <template>
   <div class="keyboardNotes">
     <template v-for="index in octave">
+      <!-- 中央のCをC4としたいためindex+2してる マジックナンバーどうにかする-->
       <p
         type="button"
         class="keyboardNotes_note"
         v-for="(note) in notes"
-        :class="{ included: isIncluded(note + (index + 1)) }"
-        :key="note + (index + 1)"
+        :class="{ included: isIncluded(note + (index + 2)) }"
+        :key="note + (index + 2)"
         :value="note"
-        :data-note="note + (index + 1)"
+        :data-note="note + (index + 2)"
       >
         <span>{{ note }}</span>
       </p>
@@ -30,7 +31,11 @@ export default {
       type: Number,
       default: 2
     },
-    cons: {
+    chordCons: {
+      type: Array,
+      required: true
+    },
+    addOctaveCons:{
       type: Array,
       required: true
     },
@@ -39,25 +44,9 @@ export default {
       required: true
     }
   },
-  computed: {
-    consOctave() {
-      let octave = 2
-      let prevNoteIndex = 0
-      return this.cons.map(v => {
-        const noteIndex = this.notes.findIndex(noteValue => {
-          return v === noteValue
-        })
-        if (noteIndex < prevNoteIndex) {
-          octave += 1
-        }
-        prevNoteIndex = noteIndex
-        return v + octave
-      })
-    }
-  },
   methods: {
     isIncluded(note) {
-      const index = this.consOctave.findIndex(element => {
+      const index = this.addOctaveCons.findIndex(element => {
         return element === note
       })
       return index > -1
@@ -73,7 +62,6 @@ export default {
   box-sizing: border-box;
   display: flex;
   background: #222;
-  height: 150px;
   &_note {
     background-color: white;
     width: calc(100% / 14); //白鍵の数 14
@@ -89,8 +77,8 @@ export default {
     align-items: center;
     margin: 5px 0;
     & > span {
-      width: 2rem;
-      height: 2rem;
+      width: 1.6rem;
+      height: 1.6rem;
       display: flex;
       align-items: center;
       justify-content: center;

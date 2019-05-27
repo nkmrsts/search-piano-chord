@@ -1,15 +1,16 @@
 <template>
   <div class="keyboardNotes">
     <template v-for="index in octave">
+      <!-- 中央のCをC4としたいためindex+2してる マジックナンバーどうにかする-->
       <button
         type="button"
         class="keyboardNotes_note"
         v-for="(note, notesIndex) in notes"
-        :key="note + (index + 1)"
-        :data-note="note + (index + 1)"
+        :key="note + (index + 2)"
+        :data-note="note + (index + 2)"
         :value="note"
         aria-pressed="false"
-        @click="clickKey($event, notesIndex)"
+        @click="clickKey($event, notesIndex, index)"
       >
         <span>{{ note }}</span>
       </button>
@@ -33,21 +34,21 @@ export default {
     }
   },
   methods: {
-    clickKey(event, noteNumber) {
+    clickKey(event, noteNumber, octave) {
       event.currentTarget.getAttribute('aria-pressed') === 'false'
         ? event.currentTarget.setAttribute('aria-pressed', true)
         : event.currentTarget.setAttribute('aria-pressed', false)
       this.$emit(
         'onClick',
         event.currentTarget.dataset.note,
-        noteNumber
+        noteNumber,
+        octave
       )
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .keyboardNotes {
   padding: 5px;

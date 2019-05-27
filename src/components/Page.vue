@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <div @click="playSelectedNotes">play</div>
     <div class="container--head">
       <div class="keyboard">
         <Keyboard-panel class="keyboard_panel" :notes="joinNotes" />
@@ -9,14 +10,15 @@
     <div class="container--bottom">
       <ul class="reaults">
         <Results-item class="reaults__item"
-           v-for="(result, key) in reaults" :key="key" :chordName="key" :chordCons="result" @addPin="addPin" />
+           v-for="(result, index) in reaults" :key="index" :chordName="result.chordName" :chordCons="result.chordCons" @addPin="addPin" @playChord="playResultChord(index)"/>
       </ul>
-      <PinnedBlock class="pinned" :pinned-list="pinnedChords" @deletePin="deletePin"/>
+      <PinnedBlock class="pinned" :pinned-list="pinnedChords" @deletePin="deletePin" @playChord="playPinnedChord"/>
     </div>
   </div>
 </template>
 
 <script>
+import Tone from "tone";
 import PinnedBlock from './PinnedBlock.vue'
 import KeyboardPanel from './KeyboardPanel.vue'
 import KeyboardNotes from './KeyboardNotes.vue'
@@ -35,7 +37,7 @@ export default {
   data() {
     return {
       selectedNotes: [],
-      reaults: {},
+      reaults: [],
       pinnedChords: [],
       notes: NOTES,
       chordPatterns: CHORD_PATTERNS
@@ -44,8 +46,6 @@ export default {
   computed: {
     sortNotes() {
       return this.selectedNotes.slice().sort((a, b) => {
-        a.octave = a.note.match( /[+-]?\d+/ )[0];
-        b.octave = b.note.match( /[+-]?\d+/ )[0];
         if (a.octave < b.octave) return -1
         if (a.octave > b.octave) return 1
         if (a.noteNumber < b.noteNumber) return -1
@@ -62,13 +62,47 @@ export default {
     }
   },
   methods: {
-    addPin(chordName, chordChons) {
-      this.pinnedChords.push({ chordName, chordChons })
+    addOctaveChordname(chrodsArray){
+      let startOctave = 3
+      let prevNoteIndex = 0
+      return chrodsArray.map(v => {
+        const noteIndex = this.notes.findIndex(noteValue => {
+          return v === noteValue
+        })
+        if (noteIndex < prevNoteIndex) {
+          startOctave += 1
+        }
+        prevNoteIndex = noteIndex
+        return v + startOctave
+      })
+    },
+
+    playPinnedChord(index) {
+      const noteArray = this.addOctaveChordname(this.pinnedChords[index].chordCons)
+      this.playChord(noteArray)
+    },
+    playResultChord(index) {
+      const noteArray = this.addOctaveChordname(this.reaults[index].chordCons)
+      this.playChord(noteArray)
+    },
+    playSelectedNotes() {
+      const noteArray = this.selectedNotes.map( v => v.note)
+      this.playChord(noteArray)
+    },
+    playChord(arr){
+      var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
+      synth.triggerAttackRelease(arr, "4n");
+    },
+
+    addPin(chordName, chordCons) {
+      const addOctaveCons = this.addOctaveChordname(chordCons)
+      this.pinnedChords.push({ chordName, chordCons, addOctaveCons })
     },
     deletePin(index) {
       this.pinnedChords.splice(index, 1)
     },
-    updateSelectedNotes(note, noteNumber) {
+
+    updateSelectedNotes(note, noteNumber, octave) {
       // 選択したnoteがselectedNotesに含まれていれば取り除く
       const foundIndex = this.selectedNotes.findIndex(elm => {
         return elm.note === note
@@ -80,7 +114,7 @@ export default {
     },
 
     findChord() {
-      this.reaults = {}
+      this.reaults = []
       if (this.selectedNotes.length === 1) {
         return false
       }
@@ -107,9 +141,10 @@ export default {
             }
             // selectedNotesの最後までループが回れば結果(this.reaults)にコード名、構成音を追加
             if (this.selectedNotes.length - 1 === i) {
-              this.reaults[note + (key === 'Ma' ? '' : key)] = chordCons.map(
-                x => this.notes[x - 1]
-              )
+              this.reaults.push({
+                chordName: note + (key === 'Ma' ? '' : key),
+                chordCons: chordCons.map( x => this.notes[x - 1])
+              })
             }
           })
         })
@@ -124,10 +159,10 @@ export default {
   height: 100vh;
 }
 .container--head {
-  height: 40%;
+  height: 35%;
 }
 .container--bottom {
-  height: 60%;
+  height: 75%;
   display: flex;
 }
 .keyboard {
@@ -144,7 +179,7 @@ export default {
   height: 80%;
 }
 .reaults {
-  width: 40%;
+  width: 30%;
   height: 100%;
   margin: 0;
   list-style: none;
@@ -164,7 +199,7 @@ export default {
   }
 }
 .pinned {
-  width: 60%;
+  width: 70%;
   height: 100%;
   overflow: scroll;
 }

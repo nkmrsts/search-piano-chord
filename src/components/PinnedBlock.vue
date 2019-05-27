@@ -4,10 +4,11 @@
       <li v-for="(item,index) in pinnedList" :key="index">
         <div class="pinned__head">
           <h3 class="pinned__name">{{item.chordName}}</h3>
-          <p class="pinned__cons">{{item.chordChons}}</p>
+          <p class="pinned__cons">{{item.chordCons}}</p>
           <div class="delete-button" @click="onClickDelete(index)">×</div>
+          <div class="play-button" @click="onClickPlay(index)">play</div>
         </div>
-        <Pinned-notes :cons="item.chordChons" :index="index"/>
+        <Pinned-notes :chord-cons="item.chordCons" :add-octave-cons="item.addOctaveCons" :index="index" class="pinned-notes"/>
       </li>
     </ul>
   </div>
@@ -27,8 +28,11 @@ export default {
     }
   },
   methods: {
+    onClickPlay(index) {
+      this.$emit('playChord',index)
+    },
     onClickDelete(index) {
-      this.$emit('deletePin', index)
+      this.$emit('deletePin',index)
     }
   }
 }
@@ -38,19 +42,39 @@ export default {
 .pinned-list {
   list-style-type: none;
   padding: 0;
+  margin-bottom: 0;
+  margin-left: 40px;
+  margin-right: 20px;
+  li {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
 }
 .pinned__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 25%;
 }
 .pinned__name {
   font-size: 21px;
+  margin: 0;
 }
 .pinned__cons {
-  margin-left: 15px;
+  font-size: 12px;
+  margin: 0;
+  text-align: left;
 }
 .delete-button {
   cursor: pointer;
-  margin-left: 10px;
+  margin: 0;
+}
+.pinned-notes {
+  width: 75%;
+  height: 120px;
+}
+.play-button {
+  cursor: pointer;
 }
 </style>
