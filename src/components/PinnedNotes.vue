@@ -5,7 +5,7 @@
       <p
         type="button"
         class="keyboardNotes_note"
-        v-for="(note) in notes"
+        v-for="note in notes"
         :class="{ included: isIncluded(note + (index + 2)) }"
         :key="note + (index + 2)"
         :value="note"
@@ -35,7 +35,7 @@ export default {
       type: Array,
       required: true
     },
-    addOctaveCons:{
+    addOctaveCons: {
       type: Array,
       required: true
     },
@@ -58,7 +58,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .keyboardNotes {
-  padding: 5px;
+  padding: 0 5px;
   box-sizing: border-box;
   display: flex;
   background: #222;
@@ -95,10 +95,12 @@ export default {
       margin-left: calc(-60% / 14);
       width: calc(60% / 14);
       height: 65%;
+      top: 5px;
       left: calc(30% / 14);
       margin-top: -5px;
       font-size: 12px;
       color: #fff;
+      appearance: none;
     }
   }
 }

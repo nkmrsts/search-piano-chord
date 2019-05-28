@@ -1,5 +1,5 @@
 <template>
-  <div id="app"><Page /></div>
+  <v-app id="app"><Page /></v-app>
 </template>
 
 <script>

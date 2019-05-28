@@ -1,6 +1,6 @@
 <template>
   <div class="selectedNotes">
-   <p>{{ notes }}</p>
+    <p>{{ notes }}</p>
   </div>
 </template>
 
@@ -18,9 +18,9 @@ export default {
 
 <style scoped lang="scss">
 .selectedNotes {
-  font-size: 24px;
+  font-size: 22px;
   width: 30%;
-  padding: 10px 25px;
+  padding: 15px 25px;
   margin: 0 auto;
   display: flex;
   align-items: center;

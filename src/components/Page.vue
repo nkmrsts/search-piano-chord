@@ -1,28 +1,52 @@
 <template>
-  <div class="container">
-    <div @click="playSelectedNotes">play</div>
-    <div class="container--head">
-      <div class="keyboard">
-        <Keyboard-panel class="keyboard_panel" :notes="joinNotes" />
-        <keyboard-notes class="keyboard_notes" @onClick="updateSelectedNotes" />
-      </div>
-    </div>
-    <div class="container--bottom">
-      <ul class="reaults">
-        <Results-item class="reaults__item"
-           v-for="(result, index) in reaults" :key="index" :chordName="result.chordName" :chordCons="result.chordCons" @addPin="addPin" @playChord="playResultChord(index)"/>
-      </ul>
-      <PinnedBlock class="pinned" :pinned-list="pinnedChords" @deletePin="deletePin" @playChord="playPinnedChord"/>
-    </div>
-  </div>
+  <v-content>
+    <v-container fluid>
+      <v-layout column fill-height>
+        <v-flex xs4 grow>
+          <div class="keyboard">
+            <div class="keyboard__button" @click="playSelectedNotes">play</div>
+            <Keyboard-panel class="keyboard_panel" :notes="joinNotes" />
+            <keyboard-notes
+              class="keyboard_notes"
+              @onClick="updateSelectedNotes"
+            />
+          </div>
+        </v-flex>
+        <v-flex xs8 class="pt-4" style="max-height: 66.6666%;">
+          <v-layout row fill-height>
+            <v-flex xs4 style="overflow: scroll;">
+              <ul class="reaults">
+                <Results-item
+                  class="reaults__item"
+                  v-for="(result, index) in reaults"
+                  :key="index"
+                  :chordName="result.chordName"
+                  :chordCons="result.chordCons"
+                  @addPin="addPin"
+                  @playChord="playResultChord(index)"
+                />
+              </ul>
+            </v-flex>
+            <v-flex xs8 style="overflow: scroll;">
+              <PinnedBlock
+                class="pinned"
+                :pinned-list="pinnedChords"
+                @deletePin="deletePin"
+                @playChord="playPinnedChord"
+              />
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
-import Tone from "tone";
+import Tone from 'tone'
 import PinnedBlock from './PinnedBlock.vue'
 import KeyboardPanel from './KeyboardPanel.vue'
 import KeyboardNotes from './KeyboardNotes.vue'
-import PinnedNotes from './PinnedNotes.vue'
 import ResultsItem from './ResultsItem.vue'
 import { CHORD_PATTERNS, NOTES } from '../const/index.js'
 export default {
@@ -31,7 +55,6 @@ export default {
     KeyboardPanel,
     KeyboardNotes,
     PinnedBlock,
-    PinnedNotes,
     ResultsItem
   },
   data() {
@@ -62,7 +85,7 @@ export default {
     }
   },
   methods: {
-    addOctaveChordname(chrodsArray){
+    addOctaveChordname(chrodsArray) {
       let startOctave = 3
       let prevNoteIndex = 0
       return chrodsArray.map(v => {
@@ -78,7 +101,9 @@ export default {
     },
 
     playPinnedChord(index) {
-      const noteArray = this.addOctaveChordname(this.pinnedChords[index].chordCons)
+      const noteArray = this.addOctaveChordname(
+        this.pinnedChords[index].chordCons
+      )
       this.playChord(noteArray)
     },
     playResultChord(index) {
@@ -86,12 +111,12 @@ export default {
       this.playChord(noteArray)
     },
     playSelectedNotes() {
-      const noteArray = this.selectedNotes.map( v => v.note)
+      const noteArray = this.selectedNotes.map(v => v.note)
       this.playChord(noteArray)
     },
-    playChord(arr){
-      var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
-      synth.triggerAttackRelease(arr, "4n");
+    playChord(arr) {
+      var synth = new Tone.PolySynth(6, Tone.Synth).toMaster()
+      synth.triggerAttackRelease(arr, '4n')
     },
 
     addPin(chordName, chordCons) {
@@ -133,7 +158,7 @@ export default {
             }
           })
 
-          this.selectedNotes.some((elm,i)=> {
+          this.selectedNotes.some((elm, i) => {
             const noteNumber = elm.noteNumber + 1
             // 選択したNoteがchordConsに含まれていなければループを抜ける
             if (chordCons.indexOf(noteNumber) === -1) {
@@ -143,7 +168,7 @@ export default {
             if (this.selectedNotes.length - 1 === i) {
               this.reaults.push({
                 chordName: note + (key === 'Ma' ? '' : key),
-                chordCons: chordCons.map( x => this.notes[x - 1])
+                chordCons: chordCons.map(x => this.notes[x - 1])
               })
             }
           })
@@ -171,27 +196,29 @@ export default {
   margin: 0 auto;
   background: #e3e3de;
   &_panel {
-    height: 20%;
+    height: 25%;
     box-sizing: border-box;
   }
 }
 .keyboard_notes {
-  height: 80%;
+  height: 75%;
+}
+.keyboard__button {
+  position: absolute;
 }
 .reaults {
-  width: 30%;
-  height: 100%;
   margin: 0;
   list-style: none;
-  overflow: scroll;
-  padding: 10px;
-  box-sizing: border-box;
+  padding: 0;
   text-align: left;
   &__item {
-    margin: 5px;
+    margin-top: 5px;
     padding: 5px 0;
     background-color: #e6e6e6;
     text-align: center;
+    &:first-child {
+      margin-top: 0;
+    }
     & span:first-child {
       font-size: 18px;
       font-weight: bold;
@@ -199,8 +226,5 @@ export default {
   }
 }
 .pinned {
-  width: 70%;
-  height: 100%;
-  overflow: scroll;
 }
 </style>
