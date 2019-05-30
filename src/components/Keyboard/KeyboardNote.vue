@@ -28,10 +28,13 @@ export default {
   },
   methods: {
     clickKey(event, note) {
-      event.currentTarget.getAttribute('aria-pressed') === 'false'
-        ? event.currentTarget.setAttribute('aria-pressed', true)
-        : event.currentTarget.setAttribute('aria-pressed', false)
-      this.$emit('onClick', note)
+      if (event.currentTarget.getAttribute('aria-pressed') === 'false') {
+        event.currentTarget.setAttribute('aria-pressed', true)
+        this.$store.dispatch('addNote', note)
+      } else {
+        event.currentTarget.setAttribute('aria-pressed', false)
+        this.$store.dispatch('removeNote', note)
+      }
     },
     removeNoteNumber(str) {
       return str.replace(/[+-]?\d+/g, '')

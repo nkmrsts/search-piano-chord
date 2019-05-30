@@ -2,6 +2,7 @@
   <v-content>
     <v-container fluid>
       <v-layout column fill-height>
+        <v-flex xs4 grow>{{ orderedSelectedNotes }}</v-flex>
         <v-flex xs4 grow>
           <!--
           <div class="keyboard">
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Tone from 'tone'
 import PinnedBlock from './PinnedBlock.vue'
 import Keyboard from './Keyboard/Keyboard.vue'
@@ -68,6 +70,8 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['orderedSelectedNotes']),
+
     sortNotes() {
       return this.selectedNotes.slice().sort((a, b) => {
         if (a.octave < b.octave) return -1
