@@ -3,6 +3,7 @@
     <v-container fluid>
       <v-layout column fill-height>
         <v-flex xs4 grow>
+          <!--
           <div class="keyboard">
             <div class="keyboard__button" @click="playSelectedNotes">play</div>
             <Keyboard-panel class="keyboard_panel" :notes="joinNotes" />
@@ -11,6 +12,8 @@
               @onClick="updateSelectedNotes"
             />
           </div>
+          -->
+          <Keyboard :rootOctave="2" :octaves="3" />
         </v-flex>
         <v-flex xs8 class="pt-4" style="max-height: 66.6666%;">
           <v-layout row fill-height>
@@ -45,15 +48,13 @@
 <script>
 import Tone from 'tone'
 import PinnedBlock from './PinnedBlock.vue'
-import KeyboardPanel from './KeyboardPanel.vue'
-import KeyboardNotes from './KeyboardNotes.vue'
+import Keyboard from './Keyboard/Keyboard.vue'
 import ResultsItem from './ResultsItem.vue'
 import { CHORD_PATTERNS, NOTES } from '../const/index.js'
 export default {
   name: 'Page',
   components: {
-    KeyboardPanel,
-    KeyboardNotes,
+    Keyboard,
     PinnedBlock,
     ResultsItem
   },
