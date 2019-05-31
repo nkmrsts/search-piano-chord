@@ -2,7 +2,15 @@
   <v-content>
     <v-container fluid>
       <v-layout column fill-height>
-        <v-flex xs4 grow>{{ orderedSelectedNotes }}</v-flex>
+        <v-flex xs4 grow>
+          <div
+            class="keyboard__button"
+            @click="playChord(orderedSelectedNotes)"
+          >
+            play
+          </div>
+          {{ orderedSelectedNotes }}
+        </v-flex>
         <v-flex xs4 grow>
           <!--
           <div class="keyboard">
@@ -22,7 +30,7 @@
               <ul class="reaults">
                 <Results-item
                   class="reaults__item"
-                  v-for="(result, index) in reaults"
+                  v-for="(result, index) in foundChords"
                   :key="index"
                   :chordName="result.chordName"
                   :chordCons="result.chordCons"
@@ -70,7 +78,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['orderedSelectedNotes']),
+    ...mapGetters(['orderedSelectedNotes', 'foundChords']),
 
     sortNotes() {
       return this.selectedNotes.slice().sort((a, b) => {
@@ -112,7 +120,9 @@ export default {
       this.playChord(noteArray)
     },
     playResultChord(index) {
-      const noteArray = this.addOctaveChordname(this.reaults[index].chordCons)
+      const noteArray = this.addOctaveChordname(
+        this.foundChords[index].chordCons
+      )
       this.playChord(noteArray)
     },
     playSelectedNotes() {
@@ -130,55 +140,6 @@ export default {
     },
     deletePin(index) {
       this.pinnedChords.splice(index, 1)
-    },
-
-    updateSelectedNotes(note, noteNumber, octave) {
-      // 選択したnoteがselectedNotesに含まれていれば取り除く
-      const foundIndex = this.selectedNotes.findIndex(elm => {
-        return elm.note === note
-      })
-      foundIndex === -1
-        ? this.selectedNotes.push({ note, noteNumber })
-        : this.selectedNotes.splice(foundIndex, 1)
-      this.findChord()
-    },
-
-    findChord() {
-      this.reaults = []
-      if (this.selectedNotes.length === 1) {
-        return false
-      }
-      // 1オクターブの音階分ループ
-      this.notes.forEach((note, noteNum) => {
-        // コードの組み合わせ(chordPatterns)分ループ
-        Object.keys(this.chordPatterns).forEach(key => {
-          // 音階に合わせた構成音の組み合わせ(chordCons)を作成
-          const chordCons = this.chordPatterns[key].map(chordNoteNum => {
-            if (chordNoteNum + noteNum > 24) {
-              return chordNoteNum + noteNum - 24
-            } else if (chordNoteNum + noteNum > 12) {
-              return chordNoteNum + noteNum - 12
-            } else {
-              return chordNoteNum + noteNum
-            }
-          })
-
-          this.selectedNotes.some((elm, i) => {
-            const noteNumber = elm.noteNumber + 1
-            // 選択したNoteがchordConsに含まれていなければループを抜ける
-            if (chordCons.indexOf(noteNumber) === -1) {
-              return true
-            }
-            // selectedNotesの最後までループが回れば結果(this.reaults)にコード名、構成音を追加
-            if (this.selectedNotes.length - 1 === i) {
-              this.reaults.push({
-                chordName: note + (key === 'Ma' ? '' : key),
-                chordCons: chordCons.map(x => this.notes[x - 1])
-              })
-            }
-          })
-        })
-      })
     }
   }
 }
@@ -207,9 +168,6 @@ export default {
 }
 .keyboard_notes {
   height: 75%;
-}
-.keyboard__button {
-  position: absolute;
 }
 .reaults {
   margin: 0;
