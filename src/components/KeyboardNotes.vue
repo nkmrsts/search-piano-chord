@@ -5,7 +5,7 @@
       <button
         type="button"
         class="keyboardNotes_note"
-        v-for="(note, notesIndex) in notes"
+        v-for="(note, notesIndex) in noteNames"
         :key="note + (index + 2)"
         :data-note="note + (index + 2)"
         :value="note"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { NOTES } from '../const/index.js'
+import { NOTE_NAMES } from '../const/index.js'
 export default {
   name: 'KeyboardNotes',
   props: {
@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      notes: NOTES
+      noteNames: NOTE_NAMES
     }
   },
   methods: {

@@ -23,7 +23,7 @@ export default {
     clickPin() {
       this.$emit('addPin', this.chordName, this.chordCons)
     },
-    clickPlay(){
+    clickPlay() {
       this.$emit('playChord')
     }
   }

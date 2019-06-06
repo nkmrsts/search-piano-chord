@@ -2,7 +2,7 @@
   <v-content>
     <v-container fluid>
       <v-layout column fill-height>
-        <v-flex xs4 grow>
+        <v-flex xs1 grow>
           <div
             class="keyboard__button"
             @click="playChord(orderedSelectedNotes)"
@@ -11,7 +11,7 @@
           </div>
           {{ orderedSelectedNotes }}
         </v-flex>
-        <v-flex xs4 grow>
+        <v-flex xs3 grow>
           <!--
           <div class="keyboard">
             <div class="keyboard__button" @click="playSelectedNotes">play</div>
@@ -60,7 +60,7 @@ import Tone from 'tone'
 import PinnedBlock from './PinnedBlock.vue'
 import Keyboard from './Keyboard/Keyboard.vue'
 import ResultsItem from './ResultsItem.vue'
-import { CHORD_PATTERNS, NOTES } from '../const/index.js'
+import { CHORD_PATTERNS, NOTE_NAMES } from '../const/index.js'
 export default {
   name: 'Page',
   components: {
@@ -70,39 +70,22 @@ export default {
   },
   data() {
     return {
-      selectedNotes: [],
       reaults: [],
       pinnedChords: [],
-      notes: NOTES,
+      noteNames: NOTE_NAMES,
       chordPatterns: CHORD_PATTERNS
     }
   },
   computed: {
-    ...mapGetters(['orderedSelectedNotes', 'foundChords']),
-
-    sortNotes() {
-      return this.selectedNotes.slice().sort((a, b) => {
-        if (a.octave < b.octave) return -1
-        if (a.octave > b.octave) return 1
-        if (a.noteNumber < b.noteNumber) return -1
-        if (a.noteNumber > b.noteNumber) return 1
-        return 0
-      })
-    },
-    joinNotes() {
-      return this.sortNotes
-        .map(elm => {
-          return this.notes[elm.noteNumber]
-        })
-        .join(',')
-    }
+    ...mapGetters(['orderedSelectedNotes', 'foundChords'])
   },
   methods: {
-    addOctaveChordname(chrodsArray) {
+    // C,E,G => C3,E3,G3に
+    addOctaveNotename(chrodsArray) {
       let startOctave = 3
       let prevNoteIndex = 0
       return chrodsArray.map(v => {
-        const noteIndex = this.notes.findIndex(noteValue => {
+        const noteIndex = this.noteNames.findIndex(noteValue => {
           return v === noteValue
         })
         if (noteIndex < prevNoteIndex) {
@@ -113,14 +96,15 @@ export default {
       })
     },
 
+    // Tone.js 音を鳴らす
     playPinnedChord(index) {
-      const noteArray = this.addOctaveChordname(
+      const noteArray = this.addOctaveNotename(
         this.pinnedChords[index].chordCons
       )
       this.playChord(noteArray)
     },
     playResultChord(index) {
-      const noteArray = this.addOctaveChordname(
+      const noteArray = this.addOctaveNotename(
         this.foundChords[index].chordCons
       )
       this.playChord(noteArray)
@@ -134,8 +118,9 @@ export default {
       synth.triggerAttackRelease(arr, '4n')
     },
 
+    // ピンどめ
     addPin(chordName, chordCons) {
-      const addOctaveCons = this.addOctaveChordname(chordCons)
+      const addOctaveCons = this.addOctaveNotename(chordCons)
       this.pinnedChords.push({ chordName, chordCons, addOctaveCons })
     },
     deletePin(index) {

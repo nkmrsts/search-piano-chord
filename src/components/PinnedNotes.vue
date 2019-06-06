@@ -5,7 +5,7 @@
       <p
         type="button"
         class="keyboardNotes_note"
-        v-for="note in notes"
+        v-for="note in noteNames"
         :class="{ included: isIncluded(note + (index + 2)) }"
         :key="note + (index + 2)"
         :value="note"
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import { NOTES } from '../const/index.js'
+import { NOTE_NAMES } from '../const/index.js'
 export default {
   name: 'PinnedNotes',
   data() {
     return {
-      notes: NOTES
+      noteNames: NOTE_NAMES
     }
   },
   props: {

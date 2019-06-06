@@ -1,4 +1,4 @@
-export const NOTES = [
+export const NOTE_NAMES = [
   'C',
   'C#',
   'D',
