@@ -65,10 +65,11 @@ export default {
   &_note {
     background-color: white;
     width: calc(100% / 14); //白鍵の数 14
-    padding: 0;
+    height: 110px;
     border-radius: 4px;
     border-top: none;
     border-bottom: none;
+    padding: 0;
     box-shadow: #575757 0 3px 3px -1px;
     position: relative;
     font-size: 12px;
