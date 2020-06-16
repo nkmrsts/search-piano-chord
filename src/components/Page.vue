@@ -22,7 +22,7 @@
             />
           </div>
           -->
-          <Keyboard :rootOctave="2" :octaves="3" />
+          <KeyboardContainer :rootOctave="2" :octaves="3" />
         </v-flex>
         <v-flex xs8 class="pt-4" style="max-height: 66.6666%;">
           <v-layout row fill-height>
@@ -58,13 +58,13 @@
 import { mapGetters } from 'vuex'
 import Tone from 'tone'
 import PinnedBlock from './PinnedBlock.vue'
-import Keyboard from './Keyboard/Keyboard.vue'
+import KeyboardContainer from './Keyboard/KeyboardContainer.vue'
 import ResultsItem from './ResultsItem.vue'
 import { CHORD_PATTERNS, NOTE_NAMES } from '../const/index.js'
 export default {
   name: 'Page',
   components: {
-    Keyboard,
+    KeyboardContainer,
     PinnedBlock,
     ResultsItem
   },

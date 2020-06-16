@@ -1,6 +1,6 @@
 <template>
   <div class="keyboard--container">
-    <KeyboardOctave
+    <KeyboardSet
       v-for="octave in octaves"
       :key="octave"
       :octave="rootOctave + octave - 1"
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import KeyboardOctave from './KeyboardOctave'
+import KeyboardSet from './KeyboardSet'
 
 export default {
-  name: 'Keyboard',
+  name: 'KeyboardContainer',
   components: {
-    KeyboardOctave
+    KeyboardSet
   },
   props: {
     rootOctave: {
