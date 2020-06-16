@@ -54,7 +54,6 @@ export default {
   -webkit-appearance: none;
   width: 100%;
   height: 100%;
-  //border: 2px solid white;
   border: 2px solid #e0e0e0;
   box-sizing: border-box;
   padding: 0;

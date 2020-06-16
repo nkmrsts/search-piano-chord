@@ -12,8 +12,8 @@
     <div class="black-notes">
       <KeyboardNote
         class="keyboard-note"
-        v-for="note in notes"
-        :note="note === 'E' || note === 'B' ? '' : note + '#' + octave"
+        v-for="note in blackNotes"
+        :note="note + '#' + octave"
         :key="note"
         color="black"
       />
@@ -25,7 +25,7 @@
 import KeyboardNote from './KeyboardNote'
 
 export default {
-  name: 'KeyboardOctave',
+  name: 'KeyboardSet',
   components: {
     KeyboardNote
   },
@@ -39,6 +39,11 @@ export default {
     return {
       notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B']
     }
+  },
+  computed: {
+    blackNotes() {
+      return this.notes.filter(note => note !== 'E' && note !== 'B')
+    }
   }
 }
 </script>
@@ -48,19 +53,13 @@ export default {
   display: block;
   position: relative;
   height: 100%;
-  width: 100%;
 }
 .white-notes {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-auto-flow: column;
   .keyboard-note {
     background-color: #fafafa;
-    //background-color: #aaa;
   }
 }
 .black-notes {
@@ -68,19 +67,11 @@ export default {
   top: 0;
   left: 7%;
   width: 100%;
-  display: flex;
-  flex-direction: row;
   height: 55%;
-
-  .keyboard-note:nth-child(3),
-  .keyboard-note:nth-child(7) {
-    pointer-events: none;
-    opacity: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  .keyboard-note:nth-child(3) {
+    grid-column: 4 / 4;
   }
-}
-
-.keyboard-note {
-  order: 0;
-  flex-grow: 1;
 }
 </style>
