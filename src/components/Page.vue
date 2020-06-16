@@ -2,6 +2,7 @@
   <v-content>
     <v-container fluid>
       <v-layout column fill-height>
+        <!-- コンポーネントに切り出す-->
         <v-flex xs1 grow>
           <div
             class="keyboard__button"
@@ -12,16 +13,6 @@
           {{ orderedSelectedNotes }}
         </v-flex>
         <v-flex xs3 grow>
-          <!--
-          <div class="keyboard">
-            <div class="keyboard__button" @click="playSelectedNotes">play</div>
-            <Keyboard-panel class="keyboard_panel" :notes="joinNotes" />
-            <keyboard-notes
-              class="keyboard_notes"
-              @onClick="updateSelectedNotes"
-            />
-          </div>
-          -->
           <KeyboardContainer :rootOctave="2" :octaves="3" />
         </v-flex>
         <v-flex xs8 class="pt-4" style="max-height: 66.6666%;">
